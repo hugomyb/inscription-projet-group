@@ -1,0 +1,91 @@
+<div class="flex flex-col items-center h-full mt-10 space-y-8">
+  <div class="flex flex-col items-center">
+    <h1
+      class="mb-8 text-3xl font-extrabold leading-none tracking-tight text-gray-900 md:text-4xl lg:text-5xl dark:text-white">
+      Formulaire <span class="underline underline-offset-3 decoration-8 decoration-blue-400 dark:decoration-blue-600">d'inscription</span>
+    </h1>
+
+    <div
+      class="w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
+      <form [formGroup]="inscriptionForm" class="space-y-3" (ngSubmit)="onSubmit()">
+        <label for="nom" class="block text-sm font-medium text-gray-900 dark:text-white">Nom :</label>
+        <input id="nom" formControlName="nom" type="text"
+               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"/>
+        <div *ngIf="nom?.invalid && (nom?.dirty || nom?.touched)">
+          <small *ngIf="nom?.errors?.['required']" class="error-message">Le nom est requis.</small>
+          <small *ngIf="nom?.errors?.['pattern']" class="error-message">Le nom ne doit pas contenir de chiffres ou de
+            caractères spéciaux.</small>
+        </div>
+
+        <label for="prenom" class="block text-sm font-medium text-gray-900 dark:text-white">Prénom :</label>
+        <input id="prenom" formControlName="prenom" type="text"
+               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"/>
+        <div *ngIf="prenom?.invalid && (prenom?.dirty || prenom?.touched)">
+          <small *ngIf="prenom?.errors?.['required']" class="error-message">Le prénom est requis.</small>
+          <small *ngIf="prenom?.errors?.['pattern']" class="error-message">Le prénom ne doit pas contenir de chiffres ou
+            de caractères
+            spéciaux.</small>
+        </div>
+
+        <label for="email" class="block text-sm font-medium text-gray-900 dark:text-white">Email :</label>
+        <input id="email" formControlName="email" type="email"
+               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"/>
+        <div *ngIf="email?.invalid && (email?.dirty || email?.touched)">
+          <small *ngIf="email?.errors?.['required']" class="error-message">L'email est requis.</small>
+          <small *ngIf="email?.errors?.['email']" class="error-message">Le format de l'email est invalide.</small>
+        </div>
+
+        <label for="password" class="block text-sm font-medium text-gray-900 dark:text-white">Mot de passe :</label>
+        <input id="password" formControlName="password" type="password"
+               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"/>
+        <div *ngIf="password?.invalid && (password?.dirty || password?.touched)">
+          <small *ngIf="password?.errors?.['required']" class="error-message">Le mot de passe est requis.</small>
+          <small *ngIf="password?.errors?.['minlength']" class="error-message">Le mot de passe doit contenir au moins 8
+            caractères.</small>
+          <small *ngIf="password?.errors?.['pattern']" class="error-message">Le mot de passe doit contenir au moins une
+            lettre et un chiffre.</small>
+        </div>
+
+        <label for="dateNaissance" class="block text-sm font-medium text-gray-900 dark:text-white">Date de naissance
+          :</label>
+        <input id="dateNaissance" formControlName="dateNaissance" type="date"
+               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"/>
+        <div *ngIf="dateNaissance?.invalid && (dateNaissance?.dirty || dateNaissance?.touched)">
+          <small *ngIf="dateNaissance?.errors?.['required']" class="error-message">La date de naissance est
+            requise.</small>
+          <small *ngIf="dateNaissance?.errors?.['minAge']" class="error-message">Vous devez avoir au moins 18
+            ans.</small>
+        </div>
+
+        <label for="ville" class="block text-sm font-medium text-gray-900 dark:text-white">Ville :</label>
+        <input id="ville" formControlName="ville" type="text"
+               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"/>
+        <div *ngIf="ville?.invalid && (ville?.dirty || ville?.touched)">
+          <small *ngIf="ville?.errors?.['required']" class="error-message">La ville est requise.</small>
+          <small *ngIf="ville?.errors?.['pattern']" class="error-message">La ville ne doit pas contenir de chiffres ou
+            de caractères
+            spéciaux.</small>
+        </div>
+
+        <label for="codePostal" class="block text-sm font-medium text-gray-900 dark:text-white">Code Postal :</label>
+        <input id="codePostal" formControlName="codePostal" type="text"
+               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"/>
+        <div *ngIf="codePostal?.errors && (codePostal?.dirty || codePostal?.touched)">
+          <small *ngIf="codePostal?.errors?.['required']" class="error-message">Le code postal est requis.</small>
+          <small *ngIf="codePostal?.errors?.['pattern']" class="error-message">Le code postal doit être un nombre à 5
+            chiffres.</small>
+        </div>
+
+        <button type="submit" [disabled]="inscriptionForm.invalid"
+                class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+          S'inscrire
+        </button>
+
+        <p class="mt-4">
+          Déjà inscrit ? <a routerLink="/login" class="text-blue-500 underline">Se connecter</a>
+        </p>
+
+      </form>
+    </div>
+  </div>
+</div>

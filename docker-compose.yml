@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  back:
+    build:
+      context: ./back
+    container_name: backend
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
+    depends_on:
+      - mongo
+
+  front:
+    build:
+      context: ./front
+    container_name: frontend
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./front:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - API_URL=http://localhost:3000/api
+      - NODE_ENV=development
+    depends_on:
+      - back
+
+volumes:
+  mongo_data:
