@@ -35,7 +35,9 @@
     </thead>
     <tbody>
 
-    <tr class="user-row odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700" *ngFor="let user of users">
+    <tr
+      class="user-row odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+      *ngFor="let user of users">
       <td class="px-6 py-4">
         {{ user.nom }}
       </td>
@@ -58,7 +60,9 @@
         {{ user.role }}
       </td>
       <td class="px-4 py-2" *ngIf="isAdmin">
-        <button (click)="deleteUser(user._id)" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">
+        <button (click)="deleteUser(user._id)"
+                *ngIf="user._id !== loggedInUserId"
+                class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">
           Supprimer
         </button>
       </td>

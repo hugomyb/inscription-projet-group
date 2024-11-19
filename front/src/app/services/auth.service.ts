@@ -10,6 +10,7 @@ export class AuthService {
   private baseUrl = environment.API_URL;
   private authenticated = false;
   private role: string = '';
+  private userId: string = '';
 
   constructor(private http: HttpClient) {}
 
@@ -18,16 +19,23 @@ export class AuthService {
       this.http.post(`${this.baseUrl}/login`, { email, password }).subscribe({
         next: (response: any) => {
           this.authenticated = true;
+          this.userId = response.userId;
           this.role = response.role;
           observer.next(response);
           observer.complete();
         },
         error: (err) => {
           this.authenticated = false;
+          this.userId = '';
+          this.role = '';
           observer.error(err);
         },
       });
     });
+  }
+
+  getUserId(): string {
+    return this.userId;
   }
 
   getRole(): string {
@@ -40,6 +48,7 @@ export class AuthService {
 
   logout(): void {
     this.authenticated = false;
+    this.userId = '';
     this.role = '';
   }
 }

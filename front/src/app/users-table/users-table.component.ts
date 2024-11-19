@@ -29,6 +29,10 @@ export class UsersTableComponent implements OnInit {
    * @type {boolean}
    */
   isAdmin: boolean = false;
+  /**
+   * Identifiant de l'utilisateur connecté.
+   */
+  loggedInUserId: string = '';
 
   /**
    * Crée une instance de UsersTableComponent.
@@ -44,6 +48,7 @@ export class UsersTableComponent implements OnInit {
    */
   ngOnInit(): void {
     this.isAdmin = this.authService.getRole() === 'admin';
+    this.loggedInUserId = this.authService.getUserId();
     this.fetchUsers();
   }
 
