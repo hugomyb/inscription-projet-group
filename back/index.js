@@ -13,6 +13,9 @@ connectDB();
 app.use(cors());
 app.use(bodyParser.json());
 
+/**
+ * Création d'un utilisateur
+ */
 app.post('/api/users', async (req, res) => {
     const { nom, prenom, email, password, dateNaissance, ville, codePostal } = req.body;
 
@@ -34,6 +37,9 @@ app.post('/api/users', async (req, res) => {
     }
 });
 
+/**
+ * Connexion d'un utilisateur
+ */
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -55,6 +61,9 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+/**
+ * Récupération de tous les utilisateurs
+ */
 app.get('/api/users', async (req, res) => {
     try {
         const users = await User.find();
@@ -65,6 +74,9 @@ app.get('/api/users', async (req, res) => {
     }
 });
 
+/**
+ * Suppression d'un utilisateur par son id
+ */
 app.delete('/api/users/:id', async (req, res) => {
     const userId = req.params.id;
 
@@ -80,6 +92,9 @@ app.delete('/api/users/:id', async (req, res) => {
     }
 });
 
+/**
+ * Test de la connexion au serveur
+ */
 app.get('/api/test', (req, res) => {
     res.json({ message: 'Hello from the backend!' });
 });
