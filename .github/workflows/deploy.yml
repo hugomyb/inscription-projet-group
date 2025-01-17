@@ -44,6 +44,9 @@ jobs:
         run: npm install
         working-directory: front
 
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli
+
       - name: Build Angular project
         run: ng build --prod --base-href "/inscription-projet-group/"
         working-directory: front
