@@ -6,6 +6,8 @@
     "start": "ng serve --host=0.0.0.0 --disable-host-check",
     "watch": "ng build --watch --configuration development",
     "test": "jest",
+    "build": "ng build --base-href=/inscription-projet-group/",
+    "deploy": "ng deploy --base-href=/inscription-projet-group/",
     "test:coverage": "jest --coverage",
     "cypress": "cypress open"
   },

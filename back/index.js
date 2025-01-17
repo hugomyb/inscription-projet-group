@@ -102,3 +102,32 @@ app.get('/api/test', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Le serveur backend est en cours d'exécution sur le port ${PORT}`);
 });
+
+const initializeAdminUser = async () => {
+    try {
+        const User = require('./models/User');
+        const adminExists = await User.findOne({ email: 'admin@example.com' });
+        if (!adminExists) {
+            const admin = new User({
+                nom: 'Admin',
+                prenom: 'Utilisateur',
+                email: 'admin@example.com',
+                password: 'adminpassword',
+                role: 'admin',
+            });
+            await admin.save();
+            console.log('Utilisateur admin créé.');
+        } else {
+            console.log('Utilisateur admin déjà existant.');
+        }
+    } catch (err) {
+        console.error('Erreur lors de l\'initialisation de l\'utilisateur admin :', err);
+    }
+};
+
+connectDB().then(() => {
+    initializeAdminUser();
+    app.listen(PORT, () => {
+        console.log(`Le serveur backend est en cours d'exécution sur le port ${PORT}`);
+    });
+});
