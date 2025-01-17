@@ -123,7 +123,7 @@ describe('User Registration Test', () => {
     // Remplit le formulaire avec un email déjà utilisé
     cy.get('#nom').type('Doe');
     cy.get('#prenom').type('Jane');
-    cy.get('#email').type('newuser@example.com'); // Email déjà utilisé
+    cy.get('#email').type('admin@example.com'); // Email déjà utilisé
     cy.get('#password').type('password');
     cy.get('#dateNaissance').type('1990-01-01');
     cy.get('#ville').type('Paris');
