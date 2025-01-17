@@ -73,7 +73,7 @@ describe('Admin Login Failure Test', () => {
 // User Registration Test
 describe('User Registration Test', () => {
   beforeEach(() => {
-    cy.intercept('POST', '/api/register', (req) => {
+    cy.intercept('POST', '**/api/users', (req) => {
       if (req.body.email === 'newuser@example.com') {
         req.reply({
           statusCode: 201,
