@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -40,28 +40,28 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm install
         working-directory: front
 
-      - name: Build Project
-        run: npm run build
+      - name: Build Angular project
+        run: ng build --prod --base-href "/inscription-projet-group/"
         working-directory: front
 
-      - name: Prepare Deployment
+      - name: Prepare deployment artifact
         run: |
           mkdir -p deploy-root
           cp -r front/dist/* deploy-root/
 
-      - name: Upload Artifact
+      - name: Upload deployment artifact
         uses: actions/upload-pages-artifact@v2
         with:
           path: deploy-root
 
-  deploy_frontend:
-    name: Deploy Frontend to GitHub Pages
-    needs: build_frontend
+  deploy_to_pages:
+    name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
+    needs: build_and_deploy
 
     permissions:
       pages: write
