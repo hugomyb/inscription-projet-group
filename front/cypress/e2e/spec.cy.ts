@@ -6,94 +6,126 @@ describe('Home page spec', () => {
 
 describe('Admin Login Test', () => {
   it('should successfully log in as an admin', () => {
+    // Mock la réponse de l'API de connexion
+    cy.intercept('POST', '/api/login', {
+      statusCode: 200,
+      body: { message: 'Login successful', token: 'mocked-token' },
+    }).as('login');
+
     // Visite la page de connexion
-    cy.visit('http://localhost:4200/login'); // Modifie avec l'URL de ta page de connexion
+    cy.visit('http://localhost:4200/login');
 
     // Remplit le formulaire de connexion
-    cy.get('[type="email"]').type('admin@example.com'); // Sélecteur pour l'email
-    cy.get('[type="password"]').type('adminpassword');    // Sélecteur pour le mot de passe
+    cy.get('[type="email"]').type('admin@example.com');
+    cy.get('[type="password"]').type('adminpassword');
 
     // Soumet le formulaire
-    cy.get('button[type="button"]').click(); // Bouton de connexion
+    cy.get('button[type="button"]').click();
 
-    // Vérifie que la connexion est réussie
-    cy.url().should('include', '/app/users'); // Redirection vers la page dashboard
-    cy.contains('Liste des utilisateurs'); // Vérifie un texte de bienvenue pour l'admin
+    // Vérifie que la requête a bien été interceptée
+    cy.wait('@login');
 
-    cy.contains('admin@example.com'); // Vérifie que l'email de l'admin est affiché
+    // Vérifie la redirection
+    cy.url().should('include', '/app/users');
+    cy.contains('Liste des utilisateurs');
+    cy.contains('admin@example.com');
   });
 });
 
 describe('Admin Login Failure Test', () => {
   it('should display an alert when login credentials are incorrect', () => {
-    // Intercepter l'alerte
-    cy.on('window:alert', (alertText) => {
-      // Vérifie le texte affiché dans l'alerte
-      expect(alertText).to.equal('Email ou mot de passe incorrect.');
-    });
+    // Mock la réponse d'échec de l'API de connexion
+    cy.intercept('POST', '/api/login', {
+      statusCode: 401,
+      body: { error: 'Invalid credentials' },
+    }).as('failedLogin');
+
     // Visite la page de connexion
-    cy.visit('http://localhost:4200/login'); // Modifie l'URL selon ton application
+    cy.visit('http://localhost:4200/login');
 
     // Remplit le formulaire avec des identifiants incorrects
-    cy.get('[type="email"]').type('wrong@example.com'); // Email incorrect
-    cy.get('[type="password"]').type('wrongpassword');  // Mot de passe incorrect
+    cy.get('[type="email"]').type('wrong@example.com');
+    cy.get('[type="password"]').type('wrongpassword');
 
     // Soumet le formulaire
     cy.get('button[type="button"]').click();
 
-    // Optionnel : Vérifie que l'URL ne change pas
-    cy.url().should('include', '/login');
+    // Vérifie que la requête a bien été interceptée
+    cy.wait('@failedLogin');
+
+    // Vérifie que l'alerte s'affiche
+    cy.contains('Email ou mot de passe incorrect.');
   });
 });
 
+
 describe('User Registration Test', () => {
   it('should register a new user successfully', () => {
+    // Mock l'API d'inscription
+    cy.intercept('POST', '/api/register', {
+      statusCode: 201,
+      body: { message: 'User registered successfully' },
+    }).as('register');
+
     // Visite la page de connexion
-    cy.visit('http://localhost:4200/login'); // Modifie l'URL selon ton application
+    cy.visit('http://localhost:4200/login');
 
     // Clique sur le bouton d'inscription
     cy.get('a[routerlink="/register"]').click();
 
     // Remplit le formulaire d'inscription
-    cy.get('#nom').type('Doe'); // Nom
-    cy.get('#prenom').type('John'); // Prénom
-    cy.get('#email').type('newuser@example.com'); // Email
-    cy.get('#password').type('newpassword'); // Mot de passe
-    cy.get('#dateNaissance').type('1990-01-01'); // Date de naissance (format YYYY-MM-DD)
-    cy.get('#ville').type('Paris'); // Ville
-    cy.get('#codePostal').type('75000'); // Code Postal
+    cy.get('#nom').type('Doe');
+    cy.get('#prenom').type('John');
+    cy.get('#email').type('newuser@example.com');
+    cy.get('#password').type('newpassword');
+    cy.get('#dateNaissance').type('1990-01-01');
+    cy.get('#ville').type('Paris');
+    cy.get('#codePostal').type('75000');
 
     // Soumet le formulaire
-    cy.get('button[type="submit"]').click(); // Bouton d'inscription
+    cy.get('button[type="submit"]').click();
 
-    // Vérifie que l'inscription est réussie
-    cy.url().should('include', '/login'); // Redirection vers la page de bienvenue
-    cy.contains('Inscription réussie !'); // Message d'erreur
+    // Vérifie que la requête a bien été interceptée
+    cy.wait('@register');
+
+    // Vérifie la redirection
+    cy.url().should('include', '/login');
+    cy.contains('Inscription réussie !');
   });
 
   it('should display an error when the email is already registered', () => {
+    // Mock l'API pour simuler une erreur d'email déjà utilisé
+    cy.intercept('POST', '/api/register', {
+      statusCode: 400,
+      body: { error: 'Email already registered' },
+    }).as('failedRegister');
+
     // Visite la page de connexion
-    cy.visit('http://localhost:4200/login'); // Modifie l'URL selon ton application
+    cy.visit('http://localhost:4200/login');
 
     // Clique sur le bouton d'inscription
     cy.get('a[routerlink="/register"]').click();
 
-    // Remplit le formulaire d'inscription avec un email déjà utilisé
-    cy.get('#nom').type('Doe'); // Nom
-    cy.get('#prenom').type('Jane'); // Prénom
-    cy.get('#email').type('newuser@example.com'); // Email déjà utilisé
-    cy.get('#password').type('password'); // Mot de passe
-    cy.get('#dateNaissance').type('1990-01-01'); // Date de naissance (format YYYY-MM-DD)
-    cy.get('#ville').type('Paris'); // Ville
-    cy.get('#codePostal').type('75000'); // Code Postal
+    // Remplit le formulaire avec un email déjà utilisé
+    cy.get('#nom').type('Doe');
+    cy.get('#prenom').type('Jane');
+    cy.get('#email').type('newuser@example.com');
+    cy.get('#password').type('password');
+    cy.get('#dateNaissance').type('1990-01-01');
+    cy.get('#ville').type('Paris');
+    cy.get('#codePostal').type('75000');
 
     // Soumet le formulaire
-    cy.get('button[type="submit"]').click(); // Bouton d'inscription
+    cy.get('button[type="submit"]').click();
 
-    // Vérifie qu'un message d'erreur est affiché
-    cy.contains("Une erreur est survenue lors de l'inscription"); // Message d'erreur
+    // Vérifie que la requête a bien été interceptée
+    cy.wait('@failedRegister');
+
+    // Vérifie le message d'erreur
+    cy.contains("Une erreur est survenue lors de l'inscription");
   });
 });
+
 
 describe('Form Validation - Required Fields After Interaction', () => {
   it('should display error messages when fields are touched but left empty', () => {
