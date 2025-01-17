@@ -2,11 +2,23 @@ name: Build, Test and Deploy Frontend and Backend
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   deploy_backend:
     runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,6 +32,16 @@ jobs:
         run: npm install
         working-directory: back
 
+      - name: Set environment variables
+        run: echo "MONGO_URI=mongodb://localhost:27017/testdb" >> $GITHUB_ENV
+
+      - name: Start backend
+        run: npm start &
+        working-directory: back
+
+      - name: Wait for backend to start
+        run: sleep 10
+
       - name: Install Vercel CLI
         run: npm install -g vercel
 
@@ -30,6 +52,16 @@ jobs:
   build_and_test_frontend:
     name: Build and Test Frontend
     runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -87,4 +119,3 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v2
-        
