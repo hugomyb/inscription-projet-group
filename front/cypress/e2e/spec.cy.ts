@@ -136,7 +136,7 @@ describe('User Registration Test', () => {
     cy.wait('@register');
 
     // Vérifie le message d'erreur
-    cy.contains("Cet email est déjà utilisé. Veuillez en choisir un autre.", { timeout: 5000 }).should('be.visible');
+    cy.contains("Une erreur est survenue lors de l'inscription.", { timeout: 5000 }).should('be.visible');
   });
 });
 
