@@ -6,11 +6,9 @@ on:
 
 jobs:
   deploy_backend:
-    name: Deploy Backend to Vercel
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -18,9 +16,12 @@ jobs:
         with:
           node-version: '16.x'
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm install
         working-directory: back
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
 
       - name: Deploy to Vercel
         run: vercel --prod --token ${{ secrets.VERCEL_TOKEN }} --yes
