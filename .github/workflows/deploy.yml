@@ -51,6 +51,13 @@ jobs:
         run: npm run build
         working-directory: front
 
+      - name: Start Angular server
+        run: npm start &
+        working-directory: front
+
+      - name: Wait for Angular server to start
+        run: sleep 20
+
       - name: Install Cypress
         run: npm install cypress --save-dev
         working-directory: front
