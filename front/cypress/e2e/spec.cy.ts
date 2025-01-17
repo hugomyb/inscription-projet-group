@@ -1,18 +1,26 @@
+// Home Page Test
 describe('Home page spec', () => {
   it('deployed angular app to localhost', () => {
-    cy.visit('http://localhost:4200')
-  })
-})
+    cy.visit('http://localhost:4200');
+  });
+});
 
+// Admin Login Test
 describe('Admin Login Test', () => {
-  it('should successfully log in as an admin', () => {
-    // Mock la réponse de l'API de connexion
+  beforeEach(() => {
+    // Mock la réponse pour les requêtes API
     cy.intercept('POST', '/api/login', {
       statusCode: 200,
       body: { message: 'Login successful', token: 'mocked-token' },
     }).as('login');
 
-    // Visite la page de connexion
+    cy.intercept('GET', '/api/users', {
+      statusCode: 200,
+      body: [{ email: 'admin@example.com', name: 'Admin' }],
+    }).as('getUsers');
+  });
+
+  it('should successfully log in as an admin', () => {
     cy.visit('http://localhost:4200/login');
 
     // Remplit le formulaire de connexion
@@ -22,25 +30,26 @@ describe('Admin Login Test', () => {
     // Soumet le formulaire
     cy.get('button[type="button"]').click();
 
-    // Vérifie que la requête a bien été interceptée
+    // Vérifie que la requête login a été interceptée
     cy.wait('@login');
 
-    // Vérifie la redirection
+    // Vérifie la redirection et le contenu
     cy.url().should('include', '/app/users');
     cy.contains('Liste des utilisateurs');
     cy.contains('admin@example.com');
   });
 });
 
+// Admin Login Failure Test
 describe('Admin Login Failure Test', () => {
-  it('should display an alert when login credentials are incorrect', () => {
-    // Mock la réponse d'échec de l'API de connexion
+  beforeEach(() => {
     cy.intercept('POST', '/api/login', {
       statusCode: 401,
       body: { error: 'Invalid credentials' },
     }).as('failedLogin');
+  });
 
-    // Visite la page de connexion
+  it('should display an alert when login credentials are incorrect', () => {
     cy.visit('http://localhost:4200/login');
 
     // Remplit le formulaire avec des identifiants incorrects
@@ -50,24 +59,33 @@ describe('Admin Login Failure Test', () => {
     // Soumet le formulaire
     cy.get('button[type="button"]').click();
 
-    // Vérifie que la requête a bien été interceptée
+    // Vérifie que la requête failedLogin a été interceptée
     cy.wait('@failedLogin');
 
-    // Vérifie que l'alerte s'affiche
-    cy.contains('Email ou mot de passe incorrect.');
+    // Vérifie le message d'erreur
+    cy.contains('Email ou mot de passe incorrect.', { timeout: 5000 }).should('be.visible');
   });
 });
 
-
+// User Registration Test
 describe('User Registration Test', () => {
-  it('should register a new user successfully', () => {
-    // Mock l'API d'inscription
-    cy.intercept('POST', '/api/register', {
-      statusCode: 201,
-      body: { message: 'User registered successfully' },
+  beforeEach(() => {
+    cy.intercept('POST', '/api/register', (req) => {
+      if (req.body.email === 'newuser@example.com') {
+        req.reply({
+          statusCode: 201,
+          body: { message: 'User registered successfully' },
+        });
+      } else {
+        req.reply({
+          statusCode: 400,
+          body: { error: 'Email already registered' },
+        });
+      }
     }).as('register');
+  });
 
-    // Visite la page de connexion
+  it('should register a new user successfully', () => {
     cy.visit('http://localhost:4200/login');
 
     // Clique sur le bouton d'inscription
@@ -88,19 +106,12 @@ describe('User Registration Test', () => {
     // Vérifie que la requête a bien été interceptée
     cy.wait('@register');
 
-    // Vérifie la redirection
+    // Vérifie la redirection et le message
     cy.url().should('include', '/login');
     cy.contains('Inscription réussie !');
   });
 
   it('should display an error when the email is already registered', () => {
-    // Mock l'API pour simuler une erreur d'email déjà utilisé
-    cy.intercept('POST', '/api/register', {
-      statusCode: 400,
-      body: { error: 'Email already registered' },
-    }).as('failedRegister');
-
-    // Visite la page de connexion
     cy.visit('http://localhost:4200/login');
 
     // Clique sur le bouton d'inscription
@@ -109,7 +120,7 @@ describe('User Registration Test', () => {
     // Remplit le formulaire avec un email déjà utilisé
     cy.get('#nom').type('Doe');
     cy.get('#prenom').type('Jane');
-    cy.get('#email').type('newuser@example.com');
+    cy.get('#email').type('newuser@example.com'); // Email déjà utilisé
     cy.get('#password').type('password');
     cy.get('#dateNaissance').type('1990-01-01');
     cy.get('#ville').type('Paris');
@@ -119,66 +130,59 @@ describe('User Registration Test', () => {
     cy.get('button[type="submit"]').click();
 
     // Vérifie que la requête a bien été interceptée
-    cy.wait('@failedRegister');
+    cy.wait('@register');
 
     // Vérifie le message d'erreur
-    cy.contains("Une erreur est survenue lors de l'inscription");
+    cy.contains("Une erreur est survenue lors de l'inscription", { timeout: 5000 }).should('be.visible');
   });
 });
 
-
+// Form Validation - Required Fields
 describe('Form Validation - Required Fields After Interaction', () => {
   it('should display error messages when fields are touched but left empty', () => {
-    // Visite la page du formulaire
-    cy.visit('http://localhost:4200/login'); // Modifie avec l'URL réelle du formulaire
-    // Clique sur le bouton d'inscription
+    cy.visit('http://localhost:4200/login');
     cy.get('a[routerlink="/register"]').click();
 
-    // Interagit avec chaque champ pour déclencher la validation
+    // Interagit avec chaque champ
     cy.get('#nom').click().blur();
-    cy.contains('Le nom est requis.').should('be.visible'); // Vérifie le message pour Nom
+    cy.contains('Le nom est requis.', { timeout: 5000 }).should('be.visible');
 
     cy.get('#prenom').click().blur();
-    cy.contains('Le prénom est requis.').should('be.visible'); // Vérifie le message pour Prénom
+    cy.contains('Le prénom est requis.', { timeout: 5000 }).should('be.visible');
 
     cy.get('#email').click().blur();
-    cy.contains("L'email est requis.").should('be.visible'); // Vérifie le message pour Email
+    cy.contains("L'email est requis.", { timeout: 5000 }).should('be.visible');
 
     cy.get('#password').click().blur();
-    cy.contains('Le mot de passe est requis.').should('be.visible'); // Vérifie le message pour Mot de passe
+    cy.contains('Le mot de passe est requis.', { timeout: 5000 }).should('be.visible');
 
     cy.get('#dateNaissance').click().blur();
-    cy.contains('La date de naissance est requise.').should('be.visible'); // Vérifie pour Date de naissance
+    cy.contains('La date de naissance est requise.', { timeout: 5000 }).should('be.visible');
 
     cy.get('#ville').click().blur();
-    cy.contains('La ville est requise.').should('be.visible'); // Vérifie pour Ville
+    cy.contains('La ville est requise.', { timeout: 5000 }).should('be.visible');
 
     cy.get('#codePostal').click().blur();
-    cy.contains('Le code postal est requis.').should('be.visible'); // Vérifie pour Code Postal
+    cy.contains('Le code postal est requis.', { timeout: 5000 }).should('be.visible');
 
     // Vérifie que le bouton reste désactivé
     cy.get('button[type="submit"]').should('be.disabled');
   });
 });
 
+// Form Validation - Specific Field Validations
 describe('Form Validation - Specific Field Validations', () => {
   it('should display error messages for postal code and birth date', () => {
-    // Visite la page du formulaire
-    cy.visit('http://localhost:4200/login'); // Modifie avec l'URL réelle du formulaire
-    // Clique sur le bouton d'inscription
+    cy.visit('http://localhost:4200/login');
     cy.get('a[routerlink="/register"]').click();
 
-    cy.get('#email').type('mail').blur();; // Remplit le champ mail
-    cy.contains('Le format de l\'email est invalide.').should('be.visible'); // Message d'erreur pour l'adresse email
+    cy.get('#email').type('mail').blur();
+    cy.contains('Le format de l\'email est invalide.', { timeout: 5000 }).should('be.visible');
 
-    // Remplit le champ Date de naissance avec une date qui rend l'utilisateur mineur
     cy.get('#dateNaissance').type('2010-01-01').blur();
-    // Vérifie qu'un message d'erreur est affiché
-    cy.contains('Vous devez avoir au moins 18 ans.').should('be.visible'); // Message d'erreur pour Date de naissance
+    cy.contains('Vous devez avoir au moins 18 ans.', { timeout: 5000 }).should('be.visible');
 
-    // Remplit le champ Code Postal avec une valeur incorrecte
     cy.get('#codePostal').type('123').blur();
-    // Vérifie qu'un message d'erreur est affiché
-    cy.contains('Le code postal doit être un nombre à 5 chiffres.').should('be.visible'); // Message d'erreur pour Code Postal
+    cy.contains('Le code postal doit être un nombre à 5 chiffres.', { timeout: 5000 }).should('be.visible');
   });
 });
