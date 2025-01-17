@@ -54,7 +54,7 @@ jobs:
       - name: Prepare deployment artifact
         run: |
           mkdir -p deploy-root
-          cp -r front/dist/* deploy-root/
+          cp -r front/dist/inscription-projet-group/* deploy-root/
 
       - name: Upload deployment artifact
         uses: actions/upload-pages-artifact@v2

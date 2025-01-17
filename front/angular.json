@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "cours-1-1": {
+    "inscription-projet-group": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/cours-1-1",
+            "outputPath": "dist/inscription-projet-group",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -59,10 +59,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "cours-1-1:build:production"
+              "buildTarget": "inscription-projet-group:build:production"
             },
             "development": {
-              "buildTarget": "cours-1-1:build:development"
+              "buildTarget": "inscription-projet-group:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -75,7 +75,7 @@
           "options": {
             "repo": "https://github.com/hugomyb/inscription-projet-group.git",
             "branch": "gh-pages",
-            "dir": "dist/cours-1-1/browser"
+            "dir": "dist/inscription-projet-group/browser"
           }
         }
       }
