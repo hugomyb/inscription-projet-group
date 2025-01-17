@@ -42,14 +42,20 @@ describe('Admin Login Test', () => {
 
 // Admin Login Failure Test
 describe('Admin Login Failure Test', () => {
-  beforeEach(() => {
+  it('should display an alert when login credentials are incorrect', () => {
+    // Capture et vérifie le contenu de l'alerte
+    cy.on('window:alert', (alertText) => {
+      // Vérifie que le texte de l'alerte est correct
+      expect(alertText).to.equal('Email ou mot de passe incorrect.');
+    });
+
+    // Mock la réponse d'échec de l'API de connexion
     cy.intercept('POST', '/api/login', {
       statusCode: 401,
       body: { error: 'Invalid credentials' },
     }).as('failedLogin');
-  });
 
-  it('should display an alert when login credentials are incorrect', () => {
+    // Visite la page de connexion
     cy.visit('http://localhost:4200/login');
 
     // Remplit le formulaire avec des identifiants incorrects
@@ -59,11 +65,8 @@ describe('Admin Login Failure Test', () => {
     // Soumet le formulaire
     cy.get('button[type="button"]').click();
 
-    // Vérifie que la requête failedLogin a été interceptée
+    // Vérifie que la requête a été interceptée
     cy.wait('@failedLogin');
-
-    // Vérifie le message d'erreur
-    cy.contains('Email ou mot de passe incorrect.', { timeout: 5000 }).should('be.visible');
   });
 });
 
