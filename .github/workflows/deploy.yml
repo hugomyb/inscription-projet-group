@@ -48,7 +48,7 @@ jobs:
         run: npm install -g @angular/cli
 
       - name: Build Angular project
-        run: ng build --prod --base-href "/inscription-projet-group/"
+        run: npm run build
         working-directory: front
 
       - name: Prepare deployment artifact
