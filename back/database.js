@@ -15,8 +15,8 @@ const connectDB = async () => {
             const admin = new User({
                 nom: 'Admin',
                 prenom: 'Utilisateur',
-                email: 'admin@example.com',
-                password: 'adminpassword',
+                email: 'loise.fenoll@ynov.com',
+                password: 'ANKymoUTFu4rbybmQ9Mt',
                 role: 'admin',
             });
             await admin.save();
