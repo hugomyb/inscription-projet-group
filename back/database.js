@@ -10,7 +10,7 @@ const connectDB = async () => {
         console.log('Connecté à la base de données MongoDB.');
 
         const User = require('./models/User');
-        const adminExists = await User.findOne({ email: 'admin@example.com' });
+        const adminExists = await User.findOne({ email: 'loise.fenoll@ynov.com' });
         if (!adminExists) {
             const admin = new User({
                 nom: 'Admin',
