@@ -5,6 +5,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ApiService } from '../api.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('InscriptionFormComponent', () => {
   let component: InscriptionFormComponent;
@@ -20,9 +22,17 @@ describe('InscriptionFormComponent', () => {
         HttpClientTestingModule,
         BrowserAnimationsModule
       ],
-      providers: [ApiService]
+      providers: [
+        ApiService,
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { paramMap: { get: () => '123' } },
+          },
+        }
+      ]
     }).compileComponents();
-
+  
     fixture = TestBed.createComponent(InscriptionFormComponent);
     component = fixture.componentInstance;
     httpTestingController = TestBed.inject(HttpTestingController);
@@ -89,7 +99,7 @@ describe('InscriptionFormComponent', () => {
     const submitButton = fixture.nativeElement.querySelector('button[type="submit"]');
     submitButton.click();
 
-    const req = httpTestingController.expectOne('https://back-psi-seven.vercel.app/api/users');
+    const req = httpTestingController.expectOne('http://backend:3000/api/users');
     req.flush({ message: 'Utilisateur créé avec succès' });
 
     fixture.detectChanges();
@@ -119,7 +129,7 @@ describe('InscriptionFormComponent', () => {
     const submitButton = fixture.nativeElement.querySelector('button[type="submit"]');
     submitButton.click();
 
-    const req = httpTestingController.expectOne('https://back-psi-seven.vercel.app/api/users');
+    const req = httpTestingController.expectOne('http://backend:3000/api/users');
     req.flush({ message: 'Utilisateur créé avec succès' });
 
     fixture.detectChanges();
@@ -144,7 +154,7 @@ describe('InscriptionFormComponent', () => {
     const submitButton = fixture.nativeElement.querySelector('button[type="submit"]');
     submitButton.click();
 
-    const req = httpTestingController.expectOne('https://back-psi-seven.vercel.app/api/users');
+    const req = httpTestingController.expectOne('http://backend:3000/api/users');
     req.flush({ message: 'Internal Server Error' }, { status: 500, statusText: 'Server Error' });
 
     fixture.detectChanges();
@@ -171,7 +181,7 @@ describe('InscriptionFormComponent', () => {
     const submitButton = fixture.nativeElement.querySelector('button[type="submit"]');
     submitButton.click();
 
-    const req = httpTestingController.expectOne('https://back-psi-seven.vercel.app/api/users');
+    const req = httpTestingController.expectOne('http://backend:3000/api/users');
     req.flush({ error: 'Cet email est déjà utilisé.' }, { status: 400, statusText: 'Bad Request' });
 
     fixture.detectChanges();
@@ -196,7 +206,7 @@ describe('InscriptionFormComponent', () => {
     const submitButton = fixture.nativeElement.querySelector('button[type="submit"]');
     submitButton.click();
 
-    const req = httpTestingController.expectOne('https://back-psi-seven.vercel.app/api/users');
+    const req = httpTestingController.expectOne('http://backend:3000/api/users');
     req.flush({ message: 'Utilisateur créé avec succès' });
 
     fixture.detectChanges();
