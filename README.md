@@ -44,3 +44,15 @@ docker-compose down
 - **POST** /api/users : Créer un utilisateur
 - **POST** /api/login : Connexion d'un utilisateur
 - **DELETE** /api/users/:id : Supprimer un utilisateur
+
+## Utilisation de l'application
+1. **Accéder** à l'application sur votre navigateur à l'adresse suivante : https://hugomyb.github.io/inscription-projet-group/#/login
+2. **Créer** un compte utilisateur :
+- Sur la page d'accueil, cliquer sur "Créer un compte" en bas de la page.
+- Enrichir les champs requis et cliquer sur "S'inscrire".
+- Retourner sur la page d'accueil accompagné d'un toast de succès.
+3. **Se connecter** à l'application :
+- Sur la page d'accueil, enrichir les champs "Email" et "Mot de passe" et cliquer sur "Se connecter".
+4. **Gérer** la liste des utilisateurs inscrits :
+- Se connecter en tant qu'admin avec les identifiants **loise.fenoll@ynov.com** - mdp : **ANKymoUTFu4rbybmQ9Mt**
+- Sur la liste des utilisateurs, cliquer sur "Supprimer" puis confirmer pour supprimer un utilisateur.
