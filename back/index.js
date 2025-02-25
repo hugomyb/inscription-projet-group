@@ -4,6 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const connectDB = require('./database');
 const User = require('./models/User');
+const setupSwagger = require('./swagger');
 
 const app = express();
 const PORT = 3000;
@@ -12,9 +13,46 @@ connectDB();
 
 app.use(cors());
 app.use(bodyParser.json());
-
+try{
+    setupSwagger(app);
+}catch(e){
+    console.error(e);
+}
 /**
- * Création d'un utilisateur
+ * @description Création d'un utilisateur
+ * @route POST /api/users
+ * @swagger
+ * /api/users:
+ *   post:
+ *     summary: Création d'un utilisateur
+ *     tags:
+ *       - Utilisateurs
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nom:
+ *                 type: string
+ *               prenom:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               dateNaissance:
+ *                 type: string
+ *               ville:
+ *                 type: string
+ *               codePostal:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Utilisateur créé avec succès
+ *       500:
+ *         description: Une erreur est survenue lors de l'inscription.
  */
 app.post('/api/users', async (req, res) => {
     const { nom, prenom, email, password, dateNaissance, ville, codePostal } = req.body;
@@ -38,7 +76,34 @@ app.post('/api/users', async (req, res) => {
 });
 
 /**
- * Connexion d'un utilisateur
+ * @description Connexion d'un utilisateur
+ * @route POST /api/login
+ * @swagger
+ * /api/login:
+ *   post:
+ *     summary: Connexion d'un utilisateur
+ *     tags:
+ *       - Authentification
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: "user@example.com"
+ *               password:
+ *                 type: string
+ *                 example: "password123"
+ *     responses:
+ *       200:
+ *         description: Connexion réussie
+ *       401:
+ *         description: Email ou mot de passe incorrect.
+ *       500:
+ *         description: Une erreur est survenue lors de la connexion.
  */
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
@@ -62,7 +127,15 @@ app.post('/api/login', async (req, res) => {
 });
 
 /**
- * Récupération de tous les utilisateurs
+ * @description Récupération de tous les utilisateurs
+ * @route GET /api/users
+ * @swagger
+ * /api/users:
+ *      get:
+ *        summary: Récupération de tous les utilisateurs
+ *          responses:
+ *            200:
+ *              description: Succès
  */
 app.get('/api/users', async (req, res) => {
     try {
@@ -75,7 +148,28 @@ app.get('/api/users', async (req, res) => {
 });
 
 /**
- * Suppression d'un utilisateur par son id
+ * @description Suppression d'un utilisateur par son id
+ * @route DELETE /api/users/{id}
+ * @swagger
+ * /api/users/{id}:
+ *   delete:
+ *     summary: Suppression d'un utilisateur par son id
+ *     tags:
+ *       - Utilisateurs
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID de l'utilisateur à supprimer
+ *     responses:
+ *       200:
+ *         description: Utilisateur supprimé avec succès.
+ *       404:
+ *         description: Utilisateur non trouvé.
+ *       500:
+ *         description: Une erreur est survenue lors de la suppression de l'utilisateur.
  */
 app.delete('/api/users/:id', async (req, res) => {
     const userId = req.params.id;
@@ -97,10 +191,6 @@ app.delete('/api/users/:id', async (req, res) => {
  */
 app.get('/api/test', (req, res) => {
     res.json({ message: 'Hello from the backend!' });
-});
-
-app.listen(PORT, () => {
-    console.log(`Le serveur backend est en cours d'exécution sur le port ${PORT}`);
 });
 
 const initializeAdminUser = async () => {
