@@ -131,11 +131,11 @@ app.post('/api/login', async (req, res) => {
  * @route GET /api/users
  * @swagger
  * /api/users:
- *      get:
- *        summary: Récupération de tous les utilisateurs
- *          responses:
- *            200:
- *              description: Succès
+ *   get:
+ *     summary: Récupération de tous les utilisateurs
+ *     responses:
+ *       200:
+ *         description: Succès
  */
 app.get('/api/users', async (req, res) => {
     try {
