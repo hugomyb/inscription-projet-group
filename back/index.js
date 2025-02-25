@@ -132,6 +132,8 @@ app.post('/api/login', async (req, res) => {
  * @swagger
  * /api/users:
  *   get:
+ *     tags:
+ *       - Utilisateurs
  *     summary: Récupération de tous les utilisateurs
  *     responses:
  *       200:
