@@ -1,35 +1,10 @@
-name: Build, Test and Deploy Frontend and Backend
+name: Build, Test and Deploy Frontend
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+  repository_dispatch:
 
 jobs:
-  deploy_backend:
-    name: Deploy Backend to Vercel
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '16.x'
-
-      - name: Install dependencies
-        run: npm install
-        working-directory: back
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel
-
-      - name: Deploy to Vercel
-        run: vercel --prod --token ${{ secrets.VERCEL_TOKEN }} --yes
-        working-directory: back
-
   build_and_test_frontend:
     name: Build and Test Frontend
     runs-on: ubuntu-latest
@@ -73,6 +48,7 @@ jobs:
         run: |
           mkdir -p deploy-root
           cp -r front/dist/inscription-projet-group/browser/* deploy-root/
+          
       - name: Upload deployment artifact
         uses: actions/upload-pages-artifact@v3
         with:
